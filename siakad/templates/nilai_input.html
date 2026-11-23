@@ -1,0 +1,79 @@
+{% extends "base.html" %}
+{% block style %}
+
+<style>
+  .pills {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+    font-size: .9rem;
+  }
+
+  .pill {
+    padding: 6px 14px;
+    border-radius: 999px;
+    background: #fff;
+    text-decoration: none;
+  }
+
+  .pill.on {
+    background: var(--grape);
+    color: #fff;
+  }
+
+  .num-input {
+    width: 110px;
+  }
+
+  .letter {
+    font-weight: 700;
+    color: var(--grape);
+  }
+
+  .form-foot {
+    padding: 16px;
+    border-top: 1px solid var(--line);
+  }
+</style>
+
+{% endblock %}
+{% block content %}
+<h1>{{ ampu.nama_matkul }}</h1>
+<p class="subtitle">Kelas {{ ampu.nama_kelas }} • isi nilai skala 0 - 4, huruf terisi otomatis.</p>
+
+<div class="pills">
+  <a href="{{ request.path }}" class="pill {{ 'on' if not urut }}">Urut nama</a>
+  <a href="?urut=nilai" class="pill {{ 'on' if urut }}">Nilai tertinggi</a>
+</div>
+
+<form method="post" class="table-wrap">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <table>
+    <thead>
+      <tr>
+        <th>NIM</th>
+        <th>Nama</th>
+        <th>Nilai akhir</th>
+        <th>Huruf</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for s in siswa %}
+      <tr>
+        <td>{{ s.nim_mhs }}<input type="hidden" name="nim" value="{{ s.nim_mhs }}"></td>
+        <td><strong>{{ s.nama_mhs }}</strong></td>
+        <td><input class="num-input" name="nilai_{{ s.nim_mhs }}" type="number" step="0.01" min="0" max="4"
+            value="{{ s.nilai_akhir if s.nilai_akhir is not none }}"></td>
+        <td class="letter">{{ s.nilai_huruf or '-' }}</td>
+      </tr>
+      {% else %}<tr>
+        <td colspan="4" class="empty">Belum ada mahasiswa di kelas ini.</td>
+      </tr>{% endfor %}
+    </tbody>
+  </table>
+
+  <div class="form-foot"><button class="btn">Simpan nilai</button></div>
+</form>
+
+{% endblock %}

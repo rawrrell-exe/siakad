@@ -1,0 +1,72 @@
+{% extends "base.html" %}
+{% block style %}
+
+<style>
+  .form-grid {
+    margin-top: 24px;
+    max-width: 680px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+  }
+
+  .wide {
+    grid-column: 1 / -1;
+  }
+
+  .hint {
+    opacity: .5;
+    font-weight: 400;
+  }
+
+  .form-actions {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 12px;
+    padding-top: 6px;
+  }
+
+  @media (max-width: 600px) {
+    .form-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>
+
+{% endblock %}
+{% block content %}
+
+<h1>{{ 'Ubah' if pk else 'Tambah' }} {{ e.title|lower }}</h1>
+
+<form method="post" class="card form-grid">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  {% for f in fields %}
+  {% set val = row[f.name] if row and row[f.name] is not none else '' %}
+
+  <label class="{{ 'wide' if f.type == 'textarea' }}">{{ f.label }}{% if f.optional %} <span
+      class="hint">(opsional)</span>{% endif %}
+
+    {% if f.type == 'select' %}
+    <select name="{{ f.name }}" {{ '' if f.optional else 'required' }}>
+      <option value="">Pilih…</option>
+      {% for o in f.options() %}<option value="{{ o.v }}" {{ 'selected' if val|string==o.v|string }}>{{ o.t }}</option>
+      {% endfor %}
+    </select>
+    {% elif f.type == 'textarea' %}
+    <textarea name="{{ f.name }}" rows="3">{{ val }}</textarea>
+    {% else %}
+    <input name="{{ f.name }}" type="{{ f.type }}" value="{{ '' if f.type == 'password' else val }}" {{ '' if f.optional
+      else 'required' }}>
+    {% endif %}
+
+  </label>
+
+  {% endfor %}
+
+  <div class="form-actions">
+    <button class="btn">Simpan data</button>
+    <a href="{{ url_for('adm_list', ent=ent) }}" class="btn ghost">Batal</a>
+  </div>
+  
+</form>
+{% endblock %}

@@ -1,0 +1,53 @@
+{% extends "base.html" %}
+{% block style %}
+
+<style>
+  .stats {
+    margin-top: 32px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+  }
+
+  .stat {
+    background: #fff;
+    border-radius: 24px;
+    padding: 20px;
+    font-weight: 500;
+  }
+
+  .stat b {
+    display: block;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.1;
+  }
+
+  .stat.purple {
+    background: var(--grape);
+    color: #fff;
+  }
+
+  .stat.yellow {
+    background: var(--sun);
+  }
+</style>
+
+{% endblock %}
+{% block content %}
+
+<h1>Hai, {{ nama }} 👋</h1>
+
+<p class="subtitle">Masuk sebagai {{ peran }}. Pilih menu di samping untuk mulai.</p>
+
+{% if stat %}
+<div class="stats">
+  <div class="stat purple"><b>{{ stat.mhs }}</b>Mahasiswa</div>
+  <div class="stat"><b>{{ stat.dosen }}</b>Dosen</div>
+  <div class="stat"><b>{{ stat.matkul }}</b>Mata kuliah</div>
+  <div class="stat yellow"><b>{{ stat.jadwal }}</b>Sesi jadwal</div>
+</div>
+
+{% endif %}
+{% endblock %}

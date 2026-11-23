@@ -1,0 +1,74 @@
+{% extends "base.html" %}
+{% block style %}
+
+<style>
+  .badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 24px;
+  }
+
+  .badge {
+    border-radius: 24px;
+    padding: 16px 28px;
+    background: var(--sun);
+  }
+
+  .badge.purple {
+    background: var(--grape);
+    color: #fff;
+  }
+
+  .badge b {
+    display: block;
+    font-family: 'Bricolage Grotesque', sans-serif;
+    font-size: 2.4rem;
+    font-weight: 800;
+  }
+
+  .letter {
+    font-weight: 700;
+    color: var(--grape);
+  }
+</style>
+
+{% endblock %}
+{% block content %}
+<h1>Transkrip nilai</h1>
+<p class="subtitle">{{ me.nama_mhs }} • NIM {{ me.nim_mhs }}</p>
+
+<div class="badges">
+  <div class="badge purple"><b>{{ '%.2f'|format(ipk) }}</b>IPK</div>
+  <div class="badge"><b>{{ sks }}</b>Total SKS</div>
+</div>
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>
+        <th>Kode</th>
+        <th>Mata kuliah</th>
+        <th>SKS</th>
+        <th>Nilai</th>
+        <th>Huruf</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for r in rows %}
+      <tr>
+        <td>{{ r.kode_mk }}</td>
+        <td><strong>{{ r.nama_matkul }}</strong></td>
+        <td>{{ r.sks_matakuliah }}</td>
+        <td>{{ r.nilai_akhir }}</td>
+        <td class="letter">{{ r.nilai_huruf }}</td>
+      </tr>
+      {% else %}<tr>
+        <td colspan="5" class="empty">Belum ada nilai yang diinput dosen.</td>
+      </tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+
+{% endblock %}

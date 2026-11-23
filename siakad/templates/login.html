@@ -1,0 +1,61 @@
+{% extends "base.html" %}
+{% block title %}Masuk - SiAkad{% endblock %}
+{% block style %}
+
+<style>
+  .demo { margin-top: 16px; padding: 14px 16px; border-radius: 16px; background: #fff; font-size: .9rem; }
+  .demo th { background: none; color: rgba(29,26,61,.6); padding: 4px 12px 4px 0; }
+  .demo td { padding: 4px 12px 4px 0; border: 0; }
+  .login-box {
+    width: 100%;
+    max-width: 440px;
+  }
+
+  .login-box h1 {
+    font-size: 3rem;
+  }
+
+  .login-form {
+    margin-top: 28px;
+    display: grid;
+    gap: 16px;
+    box-shadow: 0 20px 40px rgba(106, 76, 255, .12);
+  }
+
+  .notice {
+    margin-top: 16px;
+    padding: 12px 16px;
+    border-radius: 16px;
+    background: rgba(255, 216, 77, .6);
+  }
+</style>
+
+{% endblock %}
+{% block content %}
+<section class="login-box">
+  <h1>Halo, selamat datang di SiAkad.</h1>
+  <p class="subtitle">Portal akademik Fakultas Teknik dan Ilmu Komputer.</p>
+
+  {% if forbidden %}<p class="notice">Halaman itu bukan untuk peranmu. <a href="{{ url_for('dashboard') }}">Kembali ke
+      beranda</a></p>{% endif %}
+
+  <form method="post" class="card login-form">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <label>Username <input name="username" required autofocus></label>
+    <label>Password <input name="password" type="password" required></label>
+    <button class="btn">Masuk</button>
+  </form>
+  {% if demo %}
+  <div class="demo"><strong>Akun demo</strong>
+    <table>
+      <thead><tr><th>Peran</th><th>Username</th><th>Password</th></tr></thead>
+      <tbody>
+        <tr><td>Admin</td><td>admin1</td><td>admin1</td></tr>
+        <tr><td>Dosen</td><td>aliyah</td><td>aliyah</td></tr>
+        <tr><td>Mahasiswa</td><td>roro</td><td>roro35</td></tr>
+      </tbody>
+    </table>
+  </div>
+  {% endif %}
+</section>
+{% endblock %}

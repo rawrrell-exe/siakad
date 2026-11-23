@@ -1,0 +1,100 @@
+{% extends "base.html" %}
+{% block style %}
+
+<style>
+  .stack {
+    display: grid;
+    gap: 22px;
+    margin-top: 24px;
+  }
+
+  .report {
+    overflow-x: auto;
+  }
+
+  .report h2 {
+    font-size: 1.4rem;
+  }
+
+  .report table {
+    margin-top: 10px;
+  }
+
+  .report th {
+    background: none;
+    color: rgba(29, 26, 61, .6);
+    padding: 8px 14px 8px 0;
+  }
+
+  .report td {
+    padding: 8px 14px 8px 0;
+  }
+
+  .report-head {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .picker {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .picker select {
+    width: auto;
+  }
+</style>
+
+{% endblock %}
+{% macro tabel(judul, rows, cols, link='') %}
+<section class="card report">
+  <div class="report-head">
+    <h2>{{ judul }}</h2>
+    {% if link %}<a href="{{ link }}" target="_blank" rel="noopener" class="btn ghost small">🖨️ Cetak</a>{% endif %}
+  </div>
+
+  <table>
+    <thead>
+      <tr>{% for k, l in cols %}<th>{{ l }}</th>{% endfor %}</tr>
+    </thead>
+
+    <tbody>{% for r in rows %}<tr>{% for k, l in cols %}<td>{{ r[k] if r[k] is not none else '-' }}</td>{% endfor %}
+      </tr>
+      {% else %}<tr>
+        <td colspan="{{ cols|length }}">Belum ada data.</td>
+      </tr>{% endfor %}</tbody>
+  </table>
+
+</section>
+
+{% endmacro %}
+{% block content %}
+<div class="report-head">
+  <h1>Laporan akademik</h1>
+  <a href="{{ url_for('adm_laporan_cetak', kode_mk=kode) }}" target="_blank" rel="noopener" class="btn">🖨️ Cetak semua laporan</a>
+</div>
+<div class="stack">
+  {{ tabel('Jumlah mahasiswa per jenis kelamin', rekap, [('jenis_kelamin','Jenis kelamin'),('total_mahasiswa','Total')], url_for('adm_laporan_cetak', bagian='rekap'))
+  }}
+  {{ tabel('Rata-rata nilai akhir per mahasiswa', rata,
+  [('nim_mhs','NIM'),('nama_mhs','Nama'),('jumlah_matkul_diambil','Mata kuliah'),('rata_rata_nilai_akhir','Rata-rata')], url_for('adm_laporan_cetak', bagian='rata'))
+  }}
+  {{ tabel('Beban mengajar dosen', beban, [('nidn_dosen','NIDN'),('nama_dosen','Dosen'),('total_matkul_diampu','Mata
+  kuliah diampu')], url_for('adm_laporan_cetak', bagian='beban')) }}
+
+  <form class="picker"><strong>Peringkat nilai untuk:</strong>
+    <select name="kode_mk" onchange="this.form.submit()">
+      {% for o in matkul %}<option value="{{ o.v }}" {{ 'selected' if o.v==kode }}>{{ o.t }}</option>{% endfor %}
+    </select>
+  </form>
+
+  {{ tabel('Peringkat nilai akhir tertinggi', ranking,
+  [('nim_mhs','NIM'),('nama_mhs','Nama'),('nilai_akhir','Nilai'),('nilai_huruf','Huruf')], url_for('adm_laporan_cetak', bagian='ranking', kode_mk=kode)) }}
+</div>
+
+{% endblock %}

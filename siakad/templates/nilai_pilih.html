@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block style %}
+
+<style>
+  .class-grid {
+    margin-top: 24px;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 16px;
+  }
+
+  .class-card {
+    display: block;
+    text-decoration: none;
+    transition: transform .2s, box-shadow .2s;
+  }
+
+  .class-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 24px rgba(106, 76, 255, .15);
+  }
+
+  .class-card h2 {
+    font-size: 1.25rem;
+  }
+
+  .class-card p {
+    opacity: .7;
+    margin-top: 4px;
+  }
+</style>
+
+{% endblock %}
+{% block content %}
+<h1>Input nilai</h1>
+<p class="subtitle">Pilih kelas yang ingin kamu nilai.</p>
+
+<div class="class-grid">
+  {% for r in rows %}
+
+  <a href="{{ url_for('dsn_nilai_input', kode_mk=r.kode_mk, id_kelas=r.id_kelas) }}" class="card class-card">
+    <h2>{{ r.nama_matkul }}</h2>
+    <p>Kelas {{ r.nama_kelas }} • {{ r.hari }}</p>
+  </a>
+
+  {% else %}<p class="card">Kamu belum punya kelas yang diampu.</p>{% endfor %}
+</div>
+
+{% endblock %}

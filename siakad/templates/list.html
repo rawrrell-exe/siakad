@@ -1,0 +1,69 @@
+{% extends "base.html" %}
+{% block style %}
+<style>
+  .toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .search {
+    display: flex;
+    gap: 8px;
+    margin-top: 20px;
+    max-width: 420px;
+  }
+
+  .actions {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .inline {
+    display: inline;
+  }
+</style>
+
+{% endblock %}
+{% block content %}
+<div class="toolbar">
+  <h1>{{ e.title }}</h1>
+  <a href="{{ url_for('adm_form', ent=ent) }}" class="btn">+ Tambah data</a>
+</div>
+
+{% if e.search_sql %}
+<form class="search">
+  <input name="cari" value="{{ cari }}" placeholder="Cari nama atau nomor induk…">
+  <button class="btn sun">Cari</button>
+</form>
+{% endif %}
+
+<div class="table-wrap">
+  <table>
+    <thead>
+      <tr>{% for k, lbl in e.cols %}<th>{{ lbl }}</th>{% endfor %}<th class="actions">Aksi</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      {% for r in rows %}
+      <tr>
+        {% for k, lbl in e.cols %}<td>{{ r[k] if r[k] is not none else '-' }}</td>{% endfor %}
+        <td class="actions">
+          <a href="{{ url_for('adm_form', ent=ent, pk=r[e.pk]) }}" class="btn sun small">Ubah</a>
+          <form method="post" action="{{ url_for('adm_hapus', ent=ent, pk=r[e.pk]) }}" class="inline"
+            onsubmit="return confirm('Hapus data ini? Tindakan ini tidak bisa dibatalkan.')">
+<input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+            <button class="btn danger small">Hapus</button>
+          </form>
+        </td>
+      </tr>
+      {% else %}<tr>
+        <td colspan="{{ e.cols|length + 1 }}" class="empty">Belum ada data. Klik “Tambah data” untuk memulai.</td>
+      </tr>{% endfor %}
+    </tbody>
+  </table>
+</div>
+{% endblock %}

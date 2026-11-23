@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block style %}
+
+<style>
+  .days {
+    margin-top: 30px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    gap: 22px;
+  }
+
+  .day h2 {
+    font-size: 1.5rem;
+  }
+
+  .slot {
+    background: var(--mist);
+    border-left: 8px solid var(--grape);
+    border-radius: 16px;
+    padding: 14px;
+    margin-top: 12px;
+  }
+
+  .slot small {
+    display: block;
+    opacity: .7;
+    margin-top: 2px;
+  }
+</style>
+
+{% endblock %}
+{% block content %}
+
+<h1>{{ judul }}</h1>
+
+{% if not rows %}<p class="card" style="margin-top:24px">Belum ada jadwal. Hubungi tendik fakultas untuk mengaturnya.
+</p>{% endif %}
+
+<div class="days">
+  {% for h in hari %}{% set item = rows|selectattr('hari','equalto',h)|list %}{% if item %}
+
+  <section class="card day">
+    <h2>{{ h }}</h2>
+    {% for r in item %}
+
+    <div class="slot">
+      <strong>{{ r.nama_matkul }}</strong>
+      <small>{{ r.jam }} • Ruang {{ r.ruangan }}</small>
+      <small>{{ r.nama_dosen or ('Kelas ' ~ r.nama_kelas) }}{% if r.sks_matakuliah %} • {{ r.sks_matakuliah }} SKS{%
+        endif %}</small>
+    </div>
+
+    {% endfor %}
+  </section>
+
+  {% endif %}{% endfor %}
+</div>
+
+{% endblock %}
